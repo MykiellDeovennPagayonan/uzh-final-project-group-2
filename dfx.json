@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "canisters": {
+    "backendCore": {
+      "main": "src/backend/emr-core/app.mo",
+      "type": "motoko",
+      "args": "--enhanced-orthogonal-persistence"
+    },
+    "backendBackup": {
+      "main": "src/backend/backup-snapshot/app.mo",
+      "type": "motoko",
+      "args": "--enhanced-orthogonal-persistence"
+    },
+    "backendHederaBridge": {
+      "main": "src/backend/hedera-bridge/app.mo",
+      "type": "motoko",
+      "args": "--enhanced-orthogonal-persistence"
+    },
+    "frontend": {
+      "dependencies": ["backendCore"],
+      "frontend": {
+        "entrypoint": "build/index.html"
+      },
+      "source": ["build"],
+      "type": "assets"
+    }
+  },
+  "dfx": "0.24.3",
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": "mops sources"
+    },
+    "start": {
+      "clean": true
+    }
+  }
+}
