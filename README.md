@@ -1,4 +1,4 @@
-# Mokoto Devcon ICP Full Stack Template
+# Mokoto ICP Full Stack Template
 
 This is a Next.js-based full-stack template for building applications on the Internet Computer (ICP) using Mokoto.
 
@@ -53,14 +53,14 @@ To deploy your application:
 dfx start --background
 ```
 ```sh
-dfx deploy
+npm run generate
 ```
 
 ## Environment Variables
 
 Create a `.env.local` file and add the following variable:
 ```
-NEXT_PUBLIC_CANISTER_ID_BACKEND=<your_backend_canister_id>
+NEXT_PUBLIC_CANISTER_ID_BACKENDCORE=<your_backend_canister_id>
 ```
 You can obtain `<your_backend_canister_id>` by running `dfx canister create backend`.
 
