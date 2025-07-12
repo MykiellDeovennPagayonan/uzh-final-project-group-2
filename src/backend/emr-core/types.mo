@@ -111,4 +111,10 @@ module {
     #Err : E;
   };
 
+
+  public type LoginCredentials = {
+    email: Text;
+    password: Text
+  };
+
 };
