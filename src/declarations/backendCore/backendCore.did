@@ -7,7 +7,7 @@ type UserRole =
  };
 type UserMedicalRecord = 
  record {
-   assigned_date: int;
+   assigned_date: Time;
    is_active: bool;
    record_id: text;
    user_id: text;
@@ -15,7 +15,7 @@ type UserMedicalRecord =
 type User = 
  record {
    clinic_id: text;
-   created_at: int;
+   created_at: Time;
    email: text;
    encrypted_data: opt text;
    is_active: bool;
@@ -25,6 +25,7 @@ type User =
    role: UserRole;
    user_id: text;
  };
+type Time = int;
 type Result_6 = 
  variant {
    err: text;
@@ -66,10 +67,10 @@ type Result =
 type MedicalRecord = 
  record {
    clinic_id: text;
-   created_at: int;
+   created_at: Time;
    current_snapshot_hash: text;
    is_active: bool;
-   last_updated: int;
+   last_updated: Time;
    patient_id: text;
    record_id: text;
  };
@@ -86,7 +87,7 @@ type MedicalEvent =
    record_id: text;
    reference_event_id: opt text;
    status: EventStatus;
-   timestamp: int;
+   timestamp: Time;
  };
 type LoginCredentials = 
  record {
@@ -100,7 +101,7 @@ type FileAttachment =
    file_name: text;
    file_size: nat;
    file_type: text;
-   upload_date: int;
+   upload_date: Time;
  };
 type EventStatus = 
  variant {
@@ -133,7 +134,7 @@ type BatchRecord =
    merkle_root: text;
    previous_batch_id: opt text;
    status: BatchStatus;
-   timestamp: int;
+   timestamp: Time;
  };
 service : {
   activateMedicalRecord: (text) -> (Result_1);

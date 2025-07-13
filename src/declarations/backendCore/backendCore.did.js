@@ -6,6 +6,7 @@ export const idlFactory = ({ IDL }) => {
     'Created' : IDL.Null,
     'Verified' : IDL.Null,
   });
+  const Time = IDL.Int;
   const BatchRecord = IDL.Record({
     'event_ids' : IDL.Vec(IDL.Text),
     'status' : BatchStatus,
@@ -15,7 +16,7 @@ export const idlFactory = ({ IDL }) => {
     'event_count' : IDL.Nat,
     'previous_batch_id' : IDL.Opt(IDL.Text),
     'merkle_root' : IDL.Text,
-    'timestamp' : IDL.Int,
+    'timestamp' : Time,
   });
   const Result_6 = IDL.Variant({ 'ok' : BatchRecord, 'err' : IDL.Text });
   const EventAction = IDL.Variant({
@@ -29,7 +30,7 @@ export const idlFactory = ({ IDL }) => {
     'file_name' : IDL.Text,
     'file_size' : IDL.Nat,
     'file_type' : IDL.Text,
-    'upload_date' : IDL.Int,
+    'upload_date' : Time,
     'file_id' : IDL.Text,
   });
   const EventStatus = IDL.Variant({
@@ -46,7 +47,7 @@ export const idlFactory = ({ IDL }) => {
     'reference_event_id' : IDL.Opt(IDL.Text),
     'data' : IDL.Text,
     'batch_id' : IDL.Opt(IDL.Text),
-    'timestamp' : IDL.Int,
+    'timestamp' : Time,
     'record_id' : IDL.Text,
     'event_hash' : IDL.Text,
     'attachments' : IDL.Vec(FileAttachment),
@@ -56,8 +57,8 @@ export const idlFactory = ({ IDL }) => {
   const MedicalRecord = IDL.Record({
     'patient_id' : IDL.Text,
     'current_snapshot_hash' : IDL.Text,
-    'last_updated' : IDL.Int,
-    'created_at' : IDL.Int,
+    'last_updated' : Time,
+    'created_at' : Time,
     'clinic_id' : IDL.Text,
     'is_active' : IDL.Bool,
     'record_id' : IDL.Text,
@@ -65,7 +66,7 @@ export const idlFactory = ({ IDL }) => {
   const Result_4 = IDL.Variant({ 'ok' : MedicalRecord, 'err' : IDL.Text });
   const UserMedicalRecord = IDL.Record({
     'user_id' : IDL.Text,
-    'assigned_date' : IDL.Int,
+    'assigned_date' : Time,
     'is_active' : IDL.Bool,
     'record_id' : IDL.Text,
   });
@@ -81,7 +82,7 @@ export const idlFactory = ({ IDL }) => {
     'public_key' : IDL.Text,
     'name' : IDL.Text,
     'role' : UserRole,
-    'created_at' : IDL.Int,
+    'created_at' : Time,
     'user_id' : IDL.Text,
     'email' : IDL.Text,
     'clinic_id' : IDL.Text,

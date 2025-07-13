@@ -11,7 +11,7 @@ export interface BatchRecord {
   'event_count' : bigint,
   'previous_batch_id' : [] | [string],
   'merkle_root' : string,
-  'timestamp' : bigint,
+  'timestamp' : Time,
 }
 export type BatchStatus = { 'Failed' : null } |
   { 'Submitted' : null } |
@@ -30,7 +30,7 @@ export interface FileAttachment {
   'file_name' : string,
   'file_size' : bigint,
   'file_type' : string,
-  'upload_date' : bigint,
+  'upload_date' : Time,
   'file_id' : string,
 }
 export interface LoginCredentials { 'password' : string, 'email' : string }
@@ -42,7 +42,7 @@ export interface MedicalEvent {
   'reference_event_id' : [] | [string],
   'data' : string,
   'batch_id' : [] | [string],
-  'timestamp' : bigint,
+  'timestamp' : Time,
   'record_id' : string,
   'event_hash' : string,
   'attachments' : Array<FileAttachment>,
@@ -51,8 +51,8 @@ export interface MedicalEvent {
 export interface MedicalRecord {
   'patient_id' : string,
   'current_snapshot_hash' : string,
-  'last_updated' : bigint,
-  'created_at' : bigint,
+  'last_updated' : Time,
+  'created_at' : Time,
   'clinic_id' : string,
   'is_active' : boolean,
   'record_id' : string,
@@ -71,13 +71,14 @@ export type Result_5 = { 'ok' : MedicalEvent } |
   { 'err' : string };
 export type Result_6 = { 'ok' : BatchRecord } |
   { 'err' : string };
+export type Time = bigint;
 export interface User {
   'password_hash' : string,
   'encrypted_data' : [] | [string],
   'public_key' : string,
   'name' : string,
   'role' : UserRole,
-  'created_at' : bigint,
+  'created_at' : Time,
   'user_id' : string,
   'email' : string,
   'clinic_id' : string,
@@ -85,7 +86,7 @@ export interface User {
 }
 export interface UserMedicalRecord {
   'user_id' : string,
-  'assigned_date' : bigint,
+  'assigned_date' : Time,
   'is_active' : boolean,
   'record_id' : string,
 }

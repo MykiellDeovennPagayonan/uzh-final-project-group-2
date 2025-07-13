@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: "Secure EMR",
@@ -18,7 +19,7 @@ export default function RootLayout({
       <body className="antialiased">
         <AuthProvider>
           {children}
-
+          <Toaster />
         </AuthProvider>
       </body>
     </html>

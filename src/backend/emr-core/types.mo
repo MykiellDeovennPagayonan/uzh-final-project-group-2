@@ -5,8 +5,8 @@ module {
     record_id : Text;
     patient_id : Text; // References User with role #Patient
     clinic_id : Text;
-    created_at : Int;
-    last_updated : Int;
+    created_at : Time.Time;
+    last_updated : Time.Time;
     is_active : Bool;
     current_snapshot_hash : Text; // Hash of current state for integrity
   };
@@ -15,7 +15,7 @@ module {
   public type MedicalEvent = {
     id : Text;
     record_id : Text; // References which MedicalRecord this updates
-    timestamp : Int;
+    timestamp : Time.Time;
     event_type : Text; // "vital_signs", "diagnosis", "prescription", etc.
     action : EventAction;
     data : Text; // JSON string of encrypted medical data
@@ -36,7 +36,7 @@ module {
     role : UserRole;
     public_key : Text;
     clinic_id : Text;
-    created_at : Int;
+    created_at : Time.Time;
     is_active : Bool;
     encrypted_data : ?Text; // Additional info (patient demographics, staff details)
   };
@@ -44,7 +44,7 @@ module {
   public type UserMedicalRecord = {
     user_id : Text;
     record_id : Text;
-    assigned_date : Int;
+    assigned_date : Time.Time;
     is_active : Bool;
   };
 
@@ -67,7 +67,7 @@ module {
   // Batch Record
   public type BatchRecord = {
     batch_id : Text;
-    timestamp : Int;
+    timestamp : Time.Time;
     event_ids : [Text]; // Up to 100 events
     merkle_root : Text;
     previous_batch_id : ?Text;
@@ -97,7 +97,7 @@ module {
     file_type : Text; // "image", "document", "dicom"
     file_size : Nat;
     encrypted_data : Blob; // reference to storage
-    upload_date : Int;
+    upload_date : Time.Time;
   };
 
   public type EMRError = {
