@@ -1,3 +1,4 @@
+import Time "mo:base/Time";
 module {
   // Medical Record - the main patient record container
   public type MedicalRecord = {
@@ -115,6 +116,21 @@ module {
   public type LoginCredentials = {
     email: Text;
     password: Text
+  };
+
+    public type AuthResult = {
+    #ok : {
+      user : User;
+      sessionToken : Text;
+    };
+    #err : Text;
+  };
+
+  public type SessionToken = {
+    token : Text;
+    userId : Text;
+    expiresAt : Time.Time;
+    createdAt : Time.Time;
   };
 
 };

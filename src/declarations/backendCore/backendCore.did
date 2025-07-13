@@ -1,4 +1,195 @@
+type UserRole = 
+ variant {
+   Doctor;
+   HIMSP;
+   Nurse;
+   Patient;
+ };
+type UserMedicalRecord = 
+ record {
+   assigned_date: int;
+   is_active: bool;
+   record_id: text;
+   user_id: text;
+ };
+type User = 
+ record {
+   clinic_id: text;
+   created_at: int;
+   email: text;
+   encrypted_data: opt text;
+   is_active: bool;
+   name: text;
+   password_hash: text;
+   public_key: text;
+   role: UserRole;
+   user_id: text;
+ };
+type Result_6 = 
+ variant {
+   err: text;
+   ok: BatchRecord;
+ };
+type Result_5 = 
+ variant {
+   err: text;
+   ok: MedicalEvent;
+ };
+type Result_4 = 
+ variant {
+   err: text;
+   ok: MedicalRecord;
+ };
+type Result_3 = 
+ variant {
+   err: text;
+   ok: record {
+         sessionToken: text;
+         user: User;
+       };
+ };
+type Result_2 = 
+ variant {
+   err: text;
+   ok: User;
+ };
+type Result_1 = 
+ variant {
+   err: text;
+   ok;
+ };
+type Result = 
+ variant {
+   err: text;
+   ok: bool;
+ };
+type MedicalRecord = 
+ record {
+   clinic_id: text;
+   created_at: int;
+   current_snapshot_hash: text;
+   is_active: bool;
+   last_updated: int;
+   patient_id: text;
+   record_id: text;
+ };
+type MedicalEvent = 
+ record {
+   action: EventAction;
+   attachments: vec FileAttachment;
+   batch_id: opt text;
+   created_by_id: text;
+   data: text;
+   event_hash: text;
+   event_type: text;
+   id: text;
+   record_id: text;
+   reference_event_id: opt text;
+   status: EventStatus;
+   timestamp: int;
+ };
+type LoginCredentials = 
+ record {
+   email: text;
+   password: text;
+ };
+type FileAttachment = 
+ record {
+   encrypted_data: blob;
+   file_id: text;
+   file_name: text;
+   file_size: nat;
+   file_type: text;
+   upload_date: int;
+ };
+type EventStatus = 
+ variant {
+   Batched;
+   Failed;
+   Pending;
+   Verified;
+ };
+type EventAction = 
+ variant {
+   Append;
+   Create;
+   Delete;
+   Update;
+ };
+type BatchStatus = 
+ variant {
+   Created;
+   Failed;
+   Submitted;
+   Verified;
+ };
+type BatchRecord = 
+ record {
+   batch_hash: text;
+   batch_id: text;
+   event_count: nat;
+   event_ids: vec text;
+   hedera_tx_id: opt text;
+   merkle_root: text;
+   previous_batch_id: opt text;
+   status: BatchStatus;
+   timestamp: int;
+ };
 service : {
-  greet: (text) -> (text) query;
-  setGreeting: (text) -> ();
+  activateMedicalRecord: (text) -> (Result_1);
+  activateUser: (text) -> (Result_1);
+  assignStaffToMedicalRecord: (text, text) -> (Result_1);
+  assignUserToMedicalRecord: (text, text) -> (Result_1);
+  bulkAssignUserToRecords: (text, vec text) -> (Result_1);
+  createBatchRecord: (vec text, text, opt text) -> (Result_6);
+  createBatchRecordFromPendingEvents: (nat) -> (Result_6);
+  createMedicalEvent: (text, text, text, EventAction, text,
+   vec FileAttachment, text) -> (Result_5);
+  createMedicalRecord: (text, text) -> (Result_4);
+  deactivateAllUserAssignments: (text) -> (Result_1);
+  deactivateMedicalRecord: (text) -> (Result_1);
+  deactivateUser: (text) -> (Result_1);
+  getActiveUserMedicalRecordAssignments: (text) -> (vec UserMedicalRecord);
+  getBatchChain: (text) -> (vec BatchRecord);
+  getBatchRecordById: (text) -> (opt BatchRecord);
+  getBatchRecordsByStatus: (BatchStatus) -> (vec BatchRecord);
+  getLatestBatchRecord: () -> (opt BatchRecord);
+  getMedicalEventById: (text) -> (opt MedicalEvent);
+  getMedicalEventsByBatchId: (text) -> (vec MedicalEvent);
+  getMedicalEventsByCreatedBy: (text) -> (vec MedicalEvent);
+  getMedicalEventsByRecordId: (text) -> (vec MedicalEvent);
+  getMedicalEventsByStatus: (EventStatus) -> (vec MedicalEvent);
+  getMedicalRecordById: (text) -> (opt MedicalRecord);
+  getMedicalRecordsByClinicId: (text) -> (vec MedicalRecord);
+  getMedicalRecordsByPatientId: (text) -> (vec MedicalRecord);
+  getMedicalRecordsByStaff: (text) -> (vec MedicalRecord);
+  getMedicalRecordsByUser: (text) -> (vec MedicalRecord);
+  getPasswordHash: (text) -> (opt record {
+                                    password: text;
+                                    salt: text;
+                                  });
+  getPatientsByStaff: (text) -> (vec User);
+  getPendingMedicalEvents: () -> (vec MedicalEvent);
+  getStaffByMedicalRecord: (text) -> (vec UserMedicalRecord);
+  getStaffByPatient: (text) -> (vec User);
+  getUserByEmail: (text) -> (opt User);
+  getUserById: (text) -> (opt User);
+  getUserMedicalRecordAccess: (text, text) -> (opt UserMedicalRecord);
+  getUsersByClinic: (text) -> (vec User);
+  getUsersByMedicalRecord: (text) -> (vec User);
+  getUsersByRole: (UserRole) -> (vec User);
+  hasUserAccessToMedicalRecord: (text, text) -> (bool);
+  loginUser: (LoginCredentials) -> (Result_3);
+  logoutUser: (text) -> (Result_1);
+  registerUser: (text, text, text, UserRole, text) -> (Result_2);
+  removeStaffFromMedicalRecord: (text, text) -> (Result_1);
+  removeUserFromMedicalRecord: (text, text) -> (Result_1);
+  transferRecordAssignment: (text, text, text) -> (Result_1);
+  updateBatchRecordHederaTxId: (text, text) -> (Result_1);
+  updateBatchRecordStatus: (text, BatchStatus) -> (Result_1);
+  updateMedicalEventBatch: (text, text) -> (Result_1);
+  updateMedicalEventStatus: (text, EventStatus) -> (Result_1);
+  updatePublicKey: (text, text) -> (Result_1);
+  validateSession: (text) -> (opt User);
+  verifyBatchRecord: (text) -> (Result);
 }

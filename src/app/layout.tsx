@@ -1,5 +1,7 @@
+import React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
   title: "Secure EMR",
@@ -13,10 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`antialiased`}
-      >
-        {children}
+      <body className="antialiased">
+        <AuthProvider>
+          {children}
+
+        </AuthProvider>
       </body>
     </html>
   );
