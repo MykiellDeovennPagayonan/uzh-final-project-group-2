@@ -115,10 +115,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if ('ok' in result) {
         const { user: userData, sessionToken } = result.ok;
         localStorage.setItem('sessionToken', sessionToken);
-        localStorage.setItem('user', JSON.stringify({
-          ...userData,
-          createdAt: userData.created_at.toString(),
-        }));
+        const { created_at, ...rest } = userData;
+        const safeUser = {
+          ...rest,
+          createdAt: created_at.toString(),
+        };
+        localStorage.setItem('user', JSON.stringify(safeUser));
         setUser(userData);
       } else {
         throw new Error(result.err);
@@ -146,8 +148,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Updated to match the expected backend interface
       const result = await backendCore.registerUser(
-        email, 
-        hashedPassword, 
+        email,
+        hashedPassword,
         name,
         userRole,
         clinicId
