@@ -9,6 +9,7 @@ import Buffer "mo:base/Buffer";
 module MedicalRecordService {
   public func init(recordStore : MedicalRecords.Use, userRecordStore : UserMedicalRecords.Use) : {
     create : (Text, Text) -> async Result.Result<Types.MedicalRecord, Text>;
+    getAll : () -> async [Types.MedicalRecord];
     getById : (Text) -> async ?Types.MedicalRecord;
     getByPatientId : (Text) -> async [Types.MedicalRecord];
     getByClinicId : (Text) -> async [Types.MedicalRecord];
@@ -23,36 +24,51 @@ module MedicalRecordService {
       create = func(patient_id : Text, clinic_id : Text) : async Result.Result<Types.MedicalRecord, Text> {
         await createImpl(patient_id, clinic_id, recordStore);
       };
+
+      getAll = func() : async [Types.MedicalRecord] {
+        let startKey = "";
+        let endKey = "~";
+        recordStore.pk.find(startKey, endKey, #fwd, 1000);
+      };
+
       getById = func(id : Text) : async ?Types.MedicalRecord {
         recordStore.pk.get(id);
       };
+
       getByPatientId = func(patient_id : Text) : async [Types.MedicalRecord] {
         let startKey = patient_id # "_";
         let endKey = patient_id # "_~";
         recordStore.patient.find(startKey, endKey, #fwd, 100);
       };
+
       getByClinicId = func(clinic_id : Text) : async [Types.MedicalRecord] {
         let startKey = clinic_id # "_";
         let endKey = clinic_id # "_~";
         recordStore.clinic.find(startKey, endKey, #fwd, 100);
       };
+
       assignStaffToRecord = func(user_id : Text, record_id : Text) : async Result.Result<(), Text> {
         await assignStaffImpl(user_id, record_id, userRecordStore);
       };
+
       removeStaffFromRecord = func(user_id : Text, record_id : Text) : async Result.Result<(), Text> {
         await removeStaffImpl(user_id, record_id, userRecordStore);
       };
+
       getRecordsByStaff = func(user_id : Text) : async [Types.MedicalRecord] {
         await getRecordsByStaffImpl(user_id, userRecordStore, recordStore);
       };
+
       getStaffByRecord = func(record_id : Text) : async [Types.UserMedicalRecord] {
         let startKey = record_id # "_";
         let endKey = record_id # "_~";
         userRecordStore.record.find(startKey, endKey, #fwd, 100);
       };
+
       deactivateRecord = func(id : Text) : async Result.Result<(), Text> {
         await toggleRecordStatus(id, false, recordStore);
       };
+
       activateRecord = func(id : Text) : async Result.Result<(), Text> {
         await toggleRecordStatus(id, true, recordStore);
       };

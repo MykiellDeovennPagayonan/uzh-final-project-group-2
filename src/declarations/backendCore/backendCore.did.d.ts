@@ -131,6 +131,7 @@ export interface _SERVICE {
     [string],
     Array<UserMedicalRecord>
   >,
+  'getAllMedicalRecords' : ActorMethod<[], Array<MedicalRecord>>,
   'getBatchChain' : ActorMethod<[string], Array<BatchRecord>>,
   'getBatchRecordById' : ActorMethod<[string], [] | [BatchRecord]>,
   'getBatchRecordsByStatus' : ActorMethod<[BatchStatus], Array<BatchRecord>>,

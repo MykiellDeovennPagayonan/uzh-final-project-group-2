@@ -158,6 +158,7 @@ service : {
   deactivateMedicalRecord: (text) -> (Result_1);
   deactivateUser: (text) -> (Result_1);
   getActiveUserMedicalRecordAssignments: (text) -> (vec UserMedicalRecord);
+  getAllMedicalRecords: () -> (vec MedicalRecord);
   getBatchChain: (text) -> (vec BatchRecord);
   getBatchRecordById: (text) -> (opt BatchRecord);
   getBatchRecordsByStatus: (BatchStatus) -> (vec BatchRecord);

@@ -150,6 +150,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(UserMedicalRecord)],
         [],
       ),
+    'getAllMedicalRecords' : IDL.Func([], [IDL.Vec(MedicalRecord)], []),
     'getBatchChain' : IDL.Func([IDL.Text], [IDL.Vec(BatchRecord)], []),
     'getBatchRecordById' : IDL.Func([IDL.Text], [IDL.Opt(BatchRecord)], []),
     'getBatchRecordsByStatus' : IDL.Func(

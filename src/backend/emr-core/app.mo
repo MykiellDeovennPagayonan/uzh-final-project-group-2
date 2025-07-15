@@ -100,6 +100,10 @@ actor {
     await medicalRecordService.create(patient_id, clinic_id);
   };
 
+  public shared func getAllMedicalRecords() : async [Types.MedicalRecord] {
+    await medicalRecordService.getAll();
+  };
+
   public shared func getMedicalRecordById(id : Text) : async ?Types.MedicalRecord {
     await medicalRecordService.getById(id);
   };
@@ -258,4 +262,4 @@ actor {
   public shared func deactivateAllUserAssignments(user_id : Text) : async Result.Result<(), Text> {
     await userMedicalRecordService.deactivateAllUserAssignments(user_id);
   };
-}
+};
