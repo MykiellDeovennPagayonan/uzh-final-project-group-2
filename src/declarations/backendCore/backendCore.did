@@ -64,6 +64,13 @@ type Result =
    err: text;
    ok: bool;
  };
+type NewFileAttachment = 
+ record {
+   encrypted_data: blob;
+   file_name: text;
+   file_size: nat;
+   file_type: text;
+ };
 type MedicalRecord = 
  record {
    clinic_id: text;
@@ -145,7 +152,7 @@ service : {
   createBatchRecord: (vec text, text, opt text) -> (Result_6);
   createBatchRecordFromPendingEvents: (nat) -> (Result_6);
   createMedicalEvent: (text, text, text, EventAction, text,
-   vec FileAttachment, text) -> (Result_5);
+   vec NewFileAttachment, text) -> (Result_5);
   createMedicalRecord: (text, text) -> (Result_4);
   deactivateAllUserAssignments: (text) -> (Result_1);
   deactivateMedicalRecord: (text) -> (Result_1);

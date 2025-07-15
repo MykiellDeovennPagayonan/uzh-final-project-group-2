@@ -137,7 +137,7 @@ actor {
   };
 
   // Medical event endpoints
-  public shared func createMedicalEvent(record_id : Text, event_type : Text, data : Text, action : Types.EventAction, reference_event_id : Text, attachments : [Types.FileAttachment], created_by_id : Text) : async Result.Result<Types.MedicalEvent, Text> {
+  public shared func createMedicalEvent(record_id : Text, event_type : Text, data : Text, action : Types.EventAction, reference_event_id : Text, attachments : [Types.NewFileAttachment], created_by_id : Text) : async Result.Result<Types.MedicalEvent, Text> {
     await medicalEventService.create(record_id, event_type, data, action, reference_event_id, attachments, created_by_id);
   };
 

@@ -57,6 +57,12 @@ export interface MedicalRecord {
   'is_active' : boolean,
   'record_id' : string,
 }
+export interface NewFileAttachment {
+  'encrypted_data' : Uint8Array | number[],
+  'file_name' : string,
+  'file_size' : bigint,
+  'file_type' : string,
+}
 export type Result = { 'ok' : boolean } |
   { 'err' : string };
 export type Result_1 = { 'ok' : null } |
@@ -112,7 +118,7 @@ export interface _SERVICE {
       string,
       EventAction,
       string,
-      Array<FileAttachment>,
+      Array<NewFileAttachment>,
       string,
     ],
     Result_5

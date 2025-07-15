@@ -44,6 +44,48 @@ module {
     prefix # "_" # Int.toText(Time.now());
   };
 
+  public func simpleGenerateId(prefix : Text) : async Text {
+    let entropy = await Random.blob();
+    let seed = Random.Finite(entropy);
+
+    let randomBytes = Array.tabulate<Nat8>(
+      12,
+      func(_) {
+        switch (seed.byte()) {
+          case (?b) b;
+          case null 0;
+        };
+      },
+    );
+
+    var candidate = prefix # "_";
+    for (b in randomBytes.vals()) {
+      candidate := candidate # Nat8.toText(b);
+    };
+    candidate;
+  };
+
+  // Add this synchronous version that takes entropy as parameter
+  public func simpleGenerateIdSync(prefix : Text, entropy : Blob) : Text {
+    let seed = Random.Finite(entropy);
+
+    let randomBytes = Array.tabulate<Nat8>(
+      12,
+      func(_) {
+        switch (seed.byte()) {
+          case (?b) b;
+          case null 0;
+        };
+      },
+    );
+
+    var candidate = prefix # "_";
+    for (b in randomBytes.vals()) {
+      candidate := candidate # Nat8.toText(b);
+    };
+    candidate;
+  };
+
   public func generateUserId(store : StoreWithPK<Any>) : async Text {
     await generateId("user", store);
   };
@@ -63,4 +105,4 @@ module {
   public func generateSessionId(store : StoreWithPK<Any>) : async Text {
     await generateId("session", store);
   };
-}
+};

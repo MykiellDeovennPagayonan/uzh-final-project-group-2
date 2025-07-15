@@ -25,6 +25,18 @@ export const idlFactory = ({ IDL }) => {
     'Update' : IDL.Null,
     'Append' : IDL.Null,
   });
+  const NewFileAttachment = IDL.Record({
+    'encrypted_data' : IDL.Vec(IDL.Nat8),
+    'file_name' : IDL.Text,
+    'file_size' : IDL.Nat,
+    'file_type' : IDL.Text,
+  });
+  const EventStatus = IDL.Variant({
+    'Failed' : IDL.Null,
+    'Batched' : IDL.Null,
+    'Verified' : IDL.Null,
+    'Pending' : IDL.Null,
+  });
   const FileAttachment = IDL.Record({
     'encrypted_data' : IDL.Vec(IDL.Nat8),
     'file_name' : IDL.Text,
@@ -32,12 +44,6 @@ export const idlFactory = ({ IDL }) => {
     'file_type' : IDL.Text,
     'upload_date' : Time,
     'file_id' : IDL.Text,
-  });
-  const EventStatus = IDL.Variant({
-    'Failed' : IDL.Null,
-    'Batched' : IDL.Null,
-    'Verified' : IDL.Null,
-    'Pending' : IDL.Null,
   });
   const MedicalEvent = IDL.Record({
     'id' : IDL.Text,
@@ -129,7 +135,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Text,
           EventAction,
           IDL.Text,
-          IDL.Vec(FileAttachment),
+          IDL.Vec(NewFileAttachment),
           IDL.Text,
         ],
         [Result_5],

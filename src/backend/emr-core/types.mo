@@ -100,6 +100,13 @@ module {
     upload_date : Time.Time;
   };
 
+  public type NewFileAttachment = {
+    file_name : Text;
+    file_type : Text;
+    file_size : Nat;
+    encrypted_data : Blob;
+  };
+
   public type EMRError = {
     #NotFound : Text;
     #Unauthorized;
@@ -112,13 +119,12 @@ module {
     #Err : E;
   };
 
-
   public type LoginCredentials = {
-    email: Text;
-    password: Text
+    email : Text;
+    password : Text;
   };
 
-    public type AuthResult = {
+  public type AuthResult = {
     #ok : {
       user : User;
       sessionToken : Text;
