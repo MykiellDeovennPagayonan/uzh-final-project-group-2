@@ -12,6 +12,7 @@ import MedicalEventService "services/medicalEventService";
 import MedicalRecordService "services/medicalRecordService";
 import UserMedicalRecordService "services/userMedicalRecordService";
 import UserService "services/userService";
+import HederaCanisterService "services/hederaCanisterService";
 
 import Result "mo:base/Result";
 import Text "mo:base/Text";
@@ -41,6 +42,7 @@ actor {
   let medicalRecordService = MedicalRecordService.init(medicalRecord, userMedicalRecord);
   let userMedicalRecordService = UserMedicalRecordService.init(userMedicalRecord, medicalRecord, user);
   let userService = UserService.init(user);
+  let hederaCanisterService = HederaCanisterService.init("bkyz2-fmaaa-aaaaa-qaaaq-cai");
 
   // Authentication endpoints
   public shared func getPasswordHash(email : Text) : async ?{
@@ -261,5 +263,86 @@ actor {
 
   public shared func deactivateAllUserAssignments(user_id : Text) : async Result.Result<(), Text> {
     await userMedicalRecordService.deactivateAllUserAssignments(user_id);
+  };
+
+  // New Hedera integration endpoints
+  public shared func hederaHealthCheck() : async Result.Result<Text, Text> {
+    await hederaCanisterService.healthCheck();
+  };
+
+  public shared func hederaCreateTopic() : async Result.Result<Text, Text> {
+    await hederaCanisterService.createTopic();
+  };
+
+  public shared func sendMessageToHedera(message : Text) : async Result.Result<Text, Text> {
+    await hederaCanisterService.sendMessage(message);
+  };
+
+  public shared func sendBatchRecordToHedera(batchId : Text) : async Result.Result<Text, Text> {
+    switch (await batchRecordService.getById(batchId)) {
+      case (null) { #err("Batch record not found") };
+      case (?batchRecord) {
+        await hederaCanisterService.sendBatchRecord(batchRecord);
+      };
+    };
+  };
+
+  public shared func sendMedicalEventToHedera(eventId : Text) : async Result.Result<Text, Text> {
+    switch (await medicalEventService.getById(eventId)) {
+      case (null) { #err("Medical event not found") };
+      case (?medicalEvent) {
+        await hederaCanisterService.sendMedicalEvent(medicalEvent);
+      };
+    };
+  };
+
+  public shared func getHederaMessages() : async Result.Result<Text, Text> {
+    await hederaCanisterService.getHederaMessages();
+  };
+
+  public shared func getHederaMessagesByBatch(batchId : Text) : async Result.Result<Text, Text> {
+    await hederaCanisterService.getMessagesByBatch(batchId);
+  };
+
+  public shared func getHederaAllMessages(limit : ?Text) : async Result.Result<Text, Text> {
+    await hederaCanisterService.getAllMessages(limit);
+  };
+
+  public shared func createBatchRecordAndSendToHedera(event_ids : [Text], merkle_root : Text, previous_batch_id : ?Text) : async Result.Result<Types.BatchRecord, Text> {
+    switch (await batchRecordService.create(event_ids, merkle_root, previous_batch_id)) {
+      case (#err(error)) { #err(error) };
+      case (#ok(batchRecord)) {
+        switch (await hederaCanisterService.sendBatchRecord(batchRecord)) {
+          case (#err(hederaError)) {
+            #ok(batchRecord);
+          };
+          case (#ok(_)) {
+            switch (await batchRecordService.updateBatchStatus(batchRecord.batch_id, #Submitted)) {
+              case (#err(_)) { #ok(batchRecord) };
+              case (#ok(_)) { #ok(batchRecord) };
+            };
+          };
+        };
+      };
+    };
+  };
+
+  public shared func createMedicalEventAndSendToHedera(record_id : Text, event_type : Text, data : Text, action : Types.EventAction, reference_event_id : Text, attachments : [Types.NewFileAttachment], created_by_id : Text) : async Result.Result<Types.MedicalEvent, Text> {
+    switch (await medicalEventService.create(record_id, event_type, data, action, reference_event_id, attachments, created_by_id)) {
+      case (#err(error)) { #err(error) };
+      case (#ok(medicalEvent)) {
+        switch (await hederaCanisterService.sendMedicalEvent(medicalEvent)) {
+          case (#err(hederaError)) {
+            #ok(medicalEvent);
+          };
+          case (#ok(_)) {
+            switch (await medicalEventService.updateEventStatus(medicalEvent.id, #Verified)) {
+              case (#err(_)) { #ok(medicalEvent) };
+              case (#ok(_)) { #ok(medicalEvent) };
+            };
+          };
+        };
+      };
+    };
   };
 };
