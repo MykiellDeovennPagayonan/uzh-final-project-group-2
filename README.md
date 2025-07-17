@@ -1,4 +1,4 @@
-# Mokoto ICP Full Stack Template
+# Mokoto ICP Full Stack Project
 
 This is a Next.js-based full-stack template for building applications on the Internet Computer (ICP) using Mokoto.
 
@@ -14,18 +14,22 @@ This is a Next.js-based full-stack template for building applications on the Int
 ## Installation
 
 ### Prerequisites
+
 Ensure you have the following installed:
+
 - Node.js (v20 or later)
 - DFX SDK (for deploying to ICP)
 - Yarn or npm
 
 ### Clone the Repository
+
 ```sh
-git clone https://github.com/MykiellDeovennPagayonan/art-gallery-icp-activity
-cd art-gallery-icp-activity
+git clone https://github.com/MykiellDeovennPagayonan/uzh-final-project-group-2.git
+cd uzh-final-project-group-2
 ```
 
 ### Install Dependencies
+
 ```sh
 yarn install
 # or
@@ -35,23 +39,29 @@ npm install
 ## Running the Development Server
 
 Start the local Internet Computer replica, create the backend canister, and then start the development server:
+
 ```sh
 dfx start --background
 ```
+
 ```sh
 dfx canister create backend
 ```
+
 ```sh
 npm run dev
 ```
+
 Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Deploying to the Internet Computer
 
 To deploy your application:
+
 ```sh
 dfx start --background
 ```
+
 ```sh
 npm run generate
 ```
@@ -59,10 +69,12 @@ npm run generate
 ## Environment Variables
 
 Create a `.env.local` file and add the following variable:
+
 ```
 NEXT_PUBLIC_CANISTER_ID_BACKENDCORE=<your_backend_canister_id>
 ```
-You can obtain `<your_backend_canister_id>` by running `dfx canister create backend`.
+
+You can obtain `<your_backend_canister_id>` by running `dfx canister create backendCore`.
 
 ## Contributing
 
