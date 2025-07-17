@@ -17,6 +17,7 @@ import HederaCanisterService "services/hederaCanisterService";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
+import Error "mo:base/Error";
 
 actor {
   // Stable Storage Initialization
@@ -276,6 +277,18 @@ actor {
 
   public shared func sendMessageToHedera(message : Text) : async Result.Result<Text, Text> {
     await hederaCanisterService.sendMessage(message);
+  };
+
+  public shared func submitEmrBatchToHedera(eventIds : [Text], merkleRoot : Text) : async Result.Result<Text, Text> {
+    try {
+      let result = await hederaCanisterService.submitDailyEmrBatch(merkleRoot, eventIds);
+      switch (result) {
+        case (#ok(response)) { #ok(response) };
+        case (#err(error)) { #err("Hedera service error: " # error) };
+      };
+    } catch (e) {
+      #err("Submit EMR batch failed: " # Error.message(e));
+    };
   };
 
   public shared func sendBatchRecordToHedera(batchId : Text) : async Result.Result<Text, Text> {

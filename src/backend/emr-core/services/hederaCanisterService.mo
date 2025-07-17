@@ -17,11 +17,20 @@ module {
     send_message_with_batch : (Text, Text, [Text]) -> async Text;
     send_simple_message : (Text) -> async Text;
     
+    // EMR-specific operations
+    submit_emr_batch : (Text, [Text]) -> async Text;
+    submit_emr_batch_with_id : (Text, Text, [Text]) -> async Text;
+    submit_daily_emr_batch : (Text, [Text]) -> async Text;
+    submit_patient_emr_batch : (Text, Text, [Text]) -> async Text;
+    
     // Message retrieval
     get_all_messages : (?Text) -> async Text;
     get_messages_by_batch : (Text) -> async Text;
     get_messages_with_limit : (Nat) -> async Text;
     get_hedera_messages : () -> async Text;
+    
+    // Verification
+    verify_emr_batch : (Text) -> async Text;
   };
 
   public class HederaCanisterService(canister_id: Text) {
@@ -66,6 +75,55 @@ module {
         #ok(result)
       } catch (error) {
         #err("Send message with batch failed: " # Error.message(error))
+      }
+    };
+    
+    // Submit EMR batch with auto-generated ID
+    public func submitEmrBatch(merkleRoot: Text, eventIds: [Text]) : async Result.Result<Text, Text> {
+      try {
+        let result = await hedera_canister.submit_emr_batch(merkleRoot, eventIds);
+        #ok(result)
+      } catch (error) {
+        #err("Submit EMR batch failed: " # Error.message(error))
+      }
+    };
+    
+    // Submit EMR batch with custom ID
+    public func submitEmrBatchWithId(merkleRoot: Text, batchId: Text, eventIds: [Text]) : async Result.Result<Text, Text> {
+      try {
+        let result = await hedera_canister.submit_emr_batch_with_id(merkleRoot, batchId, eventIds);
+        #ok(result)
+      } catch (error) {
+        #err("Submit EMR batch with ID failed: " # Error.message(error))
+      }
+    };
+    
+    public func submitDailyEmrBatch(merkleRoot: Text, eventIds: [Text]) : async Result.Result<Text, Text> {
+      try {
+        let result = await hedera_canister.submit_daily_emr_batch(merkleRoot, eventIds);
+        #ok(result)
+      } catch (error) {
+        #err("Submit daily EMR batch failed: " # Error.message(error))
+      }
+    };
+    
+    // Submit patient-specific EMR batch
+    public func submitPatientEmrBatch(patientId: Text, merkleRoot: Text, eventIds: [Text]) : async Result.Result<Text, Text> {
+      try {
+        let result = await hedera_canister.submit_patient_emr_batch(patientId, merkleRoot, eventIds);
+        #ok(result)
+      } catch (error) {
+        #err("Submit patient EMR batch failed: " # Error.message(error))
+      }
+    };
+    
+    // Verify EMR batch
+    public func verifyEmrBatch(batchId: Text) : async Result.Result<Text, Text> {
+      try {
+        let result = await hedera_canister.verify_emr_batch(batchId);
+        #ok(result)
+      } catch (error) {
+        #err("Verify EMR batch failed: " # Error.message(error))
       }
     };
     
@@ -114,6 +172,11 @@ module {
       let message = "BatchRecord:" # batchRecord.batch_id # ":" # batchRecord.merkle_root;
       let eventIds = batchRecord.event_ids;
       await sendMessageWithBatch(message, batchRecord.batch_id, eventIds)
+    };
+    
+    // Enhanced convenience method to submit batch record as EMR batch
+    public func submitBatchRecordAsEmrBatch(batchRecord: Types.BatchRecord) : async Result.Result<Text, Text> {
+      await submitEmrBatchWithId(batchRecord.merkle_root, batchRecord.batch_id, batchRecord.event_ids)
     };
     
     // Convenience method to send medical event to Hedera

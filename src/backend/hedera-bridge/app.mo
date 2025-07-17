@@ -3,6 +3,8 @@ import Cycles "mo:base/ExperimentalCycles";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
 import Nat "mo:base/Nat";
+import Time "mo:base/Time";
+import Int "mo:base/Int";
 import IC "ic:aaaaa-aa";
 
 actor {
@@ -56,6 +58,12 @@ actor {
     "[" # Text.join(",", quoted_ids.vals()) # "]";
   };
 
+  // Generate a batch ID with timestamp
+  private func generate_batch_id() : Text {
+    let timestamp = Time.now();
+    "emr_batch_" # Int.toText(timestamp);
+  };
+
   public func health_check() : async Text {
     let url = "https://uzh-final-project-hedera-server.onrender.com/health";
     await make_http_request(url, #get, null, []);
@@ -84,6 +92,31 @@ actor {
     await make_http_request(url, #post, ?body, headers);
   };
 
+  // NEW: Submit EMR Batch with Merkle Root
+  public func submit_emr_batch(merkleRoot: Text, eventIds: [Text]) : async Text {
+    let batchId = generate_batch_id();
+    await send_message_with_batch(merkleRoot, batchId, eventIds);
+  };
+
+  // NEW: Submit EMR Batch with custom batch ID
+  public func submit_emr_batch_with_id(merkleRoot: Text, batchId: Text, eventIds: [Text]) : async Text {
+    await send_message_with_batch(merkleRoot, batchId, eventIds);
+  };
+
+  // NEW: Submit daily EMR batch (typical use case)
+  public func submit_daily_emr_batch(merkleRoot: Text, eventIds: [Text]) : async Text {
+    let timestamp = Time.now();
+    let batchId = "daily_emr_batch_" # Int.toText(timestamp);
+    await send_message_with_batch(merkleRoot, batchId, eventIds);
+  };
+
+  // NEW: Submit patient-specific EMR batch
+  public func submit_patient_emr_batch(patientId: Text, merkleRoot: Text, eventIds: [Text]) : async Text {
+    let timestamp = Time.now();
+    let batchId = "patient_" # patientId # "_batch_" # Int.toText(timestamp);
+    await send_message_with_batch(merkleRoot, batchId, eventIds);
+  };
+
   // 5. Get All Messages - GET /api/hedera/messages?limit=10
   public func get_all_messages(limit: ?Text) : async Text {
     let base_url = "https://uzh-final-project-hedera-server.onrender.com/api/hedera/messages";
@@ -98,6 +131,11 @@ actor {
   public func get_messages_by_batch(batchId: Text) : async Text {
     let url = "https://uzh-final-project-hedera-server.onrender.com/api/hedera/messages/batch/" # batchId;
     await make_http_request(url, #get, null, []);
+  };
+
+  // NEW: Verify EMR batch integrity
+  public func verify_emr_batch(batchId: Text) : async Text {
+    await get_messages_by_batch(batchId);
   };
 
   // 7. Get Hedera Messages (your original function, now using helper)
